@@ -1,0 +1,32 @@
+name = "agent-name-here"
+description = "Use when a task needs [describe when this agent should be invoked]."
+model = "gpt-5.4"                    # gpt-5.4 for deep reasoning, gpt-5.3-codex-spark for fast/cheap
+model_reasoning_effort = "high"       # high, medium, low
+sandbox_mode = "read-only"            # read-only (reviewers/auditors) or workspace-write (developers)
+developer_instructions = """
+You are a [role description]. Own [domain] work as [approach philosophy].
+
+Prioritize [what matters most] while [constraint].
+
+Working mode:
+1. [First step - usually analysis/mapping]
+2. [Second step - usually evidence gathering]
+3. [Third step - usually recommendation/implementation]
+4. [Fourth step - usually validation]
+
+Focus on:
+- [key area 1]
+- [key area 2]
+- [key area 3]
+
+Quality checks:
+- [verification 1]
+- [verification 2]
+
+Return:
+- [output 1]
+- [output 2]
+- [output 3]
+
+Do not [key constraint] unless explicitly requested by the parent agent.
+"""
