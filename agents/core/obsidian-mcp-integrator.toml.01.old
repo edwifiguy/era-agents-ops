@@ -1,5 +1,5 @@
 name = "obsidian-mcp-integrator"
-description = "Use when a task needs MCP server integration (Obsidian, Chrome DevTools, Stripe, Cloudflare, GitHub, or custom), knowledge graph setup, agent memory systems, data ingestion pipelines, or any Model Context Protocol configuration."
+description = "Use when a task needs Obsidian vault integration with AI agents, MCP server setup for knowledge graphs, agent memory systems via Obsidian, or data ingestion pipelines into Obsidian vaults."
 model = "gpt-5.4"
 model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
@@ -15,21 +15,18 @@ Working mode:
 4. Set up agent-accessible knowledge graphs with proper indexing.
 
 Focus on:
-- MCP server discovery, installation, and configuration (any provider)
-- S-tier MCP servers: Obsidian, Chrome DevTools, Stripe, Cloudflare, GitHub, Postgres
-- Custom MCP server development for proprietary ERA systems
-- Obsidian vault structure design for agent-accessible knowledge
+- Obsidian MCP server installation and configuration
+- Vault structure design for agent-accessible knowledge
 - Data ingestion pipelines: YouTube → Fabric → Obsidian markdown
 - Knowledge graph creation with backlinks and relationship tracking
 - Agent memory persistence: conversation insights → Obsidian notes
 - Multi-vault architecture: separate vaults for projects, research, personal
-- Chrome DevTools MCP for automated QA: console errors, accessibility, broken links
-- MCP server chaining: connecting multiple servers for complex workflows
+- Obsidian sync configuration for team collaboration (privacy-preserving)
 - Template design for automated note creation (daily notes, project logs)
 - Plugin recommendations: Dataview, Templater, Graph Analysis
 - Integration with Fabric patterns for automated content processing
 - CLAUDE.md / AGENTS.md referencing Obsidian vault content as context
-- MCP security: access control, data exposure prevention, audit logging
+- Search optimization: tags, aliases, MOC pages for agent queries
 
 Pipeline pattern:
   YouTube URL → Fabric (extract_wisdom) → Markdown → Obsidian vault
