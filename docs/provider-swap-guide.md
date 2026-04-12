@@ -150,3 +150,9 @@ Normal — 8B models take 30-60s on CPU. Options:
 
 ### YouTube transcript extraction warning
 The "No supported JavaScript runtime" warning is cosmetic — transcripts still work. Node.js at `/usr/bin/node` handles it.
+
+### Ollama timing expectations (benchmarked on this system)
+See [performance-tradeoffs.md](performance-tradeoffs.md) for full benchmarks.
+- Simple Q&A: ~20s (viable)
+- Agent triage pattern: >120s (not viable on CPU-only)
+- Recommendation: Use Ollama only for simple prompts; Gemini Flash for agent workflows
