@@ -74,31 +74,46 @@
 
 ---
 
-## REMEDIATION PLAN
+## REMEDIATION PLAN — Status Updated 2026-04-12
 
-### IMMEDIATE (do now)
-1. **Rotate Anthropic API key** — fixes [C1]
-   - Go to https://console.anthropic.com/settings/keys
-   - Generate new key → update ~/.config/fabric/.env
-2. **Rotate Gemini API key** — fixes [C2]
-   - Go to https://aistudio.google.com/apikey
-   - Generate new key → restrict by IP → update ~/.config/fabric/.env
-3. **Add .gitignore to ~/.config/fabric/** — fixes [M1]
-   ```
-   echo ".env" > ~/.config/fabric/.gitignore
-   ```
+### IMMEDIATE
+1. ⏳ **Rotate Anthropic API key** — fixes [C1]
+   - **MANUAL ACTION REQUIRED:** Go to https://console.anthropic.com/settings/keys
+   - Generate new key → update ~/.config/fabric/.env → delete old key
+2. ⏳ **Rotate Gemini API key** — fixes [C2]
+   - **MANUAL ACTION REQUIRED:** Go to https://aistudio.google.com/apikey
+   - Generate new key → restrict by IP in Google Cloud Console → update ~/.config/fabric/.env
+3. ✅ **Add .gitignore to ~/.config/fabric/** — fixes [M1] — DONE
+   - Created with .env, .env.*, models_cache.json exclusions
 
-### SHORT-TERM (this week)
-4. **Add .env to ProbeCodeAI .gitignore** — fixes [M2]
-5. **Audit archived .env files** — fixes [L2]
-   - Check ~/Projects/archive/ .env files for real secrets
-   - Securely delete with `shred -u` if no longer needed
-6. **Install git-secrets or pre-commit hook** to prevent future .env commits
+### SHORT-TERM
+4. ✅ **Add .env to ProbeCodeAI .gitignore** — fixes [M2] — DONE
+   - Created .gitignore with .env, node_modules, IDE exclusions
+5. ✅ **Audit archived .env files** — fixes [L2] — DONE
+   - Scanned all archived .env files: only placeholders found, no real secrets
+6. ✅ **Install git-secrets pre-commit hook** — DONE
+   - Installed git-secrets v1.3.0 system-wide
+   - Added patterns: Anthropic (sk-ant-*), Google (AIza*), OpenRouter (sk-or-*),
+     OpenAI (sk-*), GitHub (ghp_*, gho_*), Slack (xoxb-*), Stripe (sk_live_*), AWS
+   - Hooks installed on: era-agents-ops, EU-Land, Archon
 
-### ONGOING
-7. **Investigate Varlock** for schema-driven env management (from video recommendations)
-8. **Consider 1Password CLI** for secrets injection instead of plain text .env files
-9. **Add env-security-auditor agent** to regular project review workflow
+### COMPLETED
+7. ✅ **Verified ~/.codex/auth.json permissions** — fixes [H3] — DONE
+   - Confirmed 600 (owner read/write only)
+8. ✅ **Created .env.schema template** (Varlock-inspired) — DONE
+   - Available at templates/env.schema.template
+   - JSDoc-style annotations: @type, @required, @sensitivity, @rotate-url
+9. ✅ **Created env-security-auditor agent** — DONE
+   - Available for recurring audits via Codex or Fabric
+10. ✅ **Created era_env_security_audit Fabric pattern** — DONE
+    - Installed to ~/.config/fabric/patterns/
+
+### REMAINING MANUAL ACTIONS
+- ⏳ Rotate Anthropic API key [C1]
+- ⏳ Rotate Gemini API key [C2]
+- ⏳ Get OpenRouter free API key and replace placeholder [H1]
+- 📋 Investigate Varlock for full schema-driven migration
+- 📋 Consider 1Password CLI for runtime secrets injection
 
 ## RECOMMENDED TOOLING
 
