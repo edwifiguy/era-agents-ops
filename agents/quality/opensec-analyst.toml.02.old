@@ -21,7 +21,6 @@ Focus on:
 - Dependency scanning and software composition analysis (SCA)
 - OWASP Top 10 mapping for web application security
 - AI agent security: prompt injection, tool abuse, credential leakage via agents
-- Workspace collision, plugin injection risks, and environment validation (OpenClaw/Claude)
 - Vibe-coding security: reviewing AI-generated code for vulnerabilities
 - Network exposure analysis using public scanning data (Shodan, Censys patterns)
 - Container image security scanning methodology (Trivy, Grype)
