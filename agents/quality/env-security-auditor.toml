@@ -28,15 +28,19 @@ Secret patterns to detect:
 - Hardcoded tokens in source code referencing env vars
 
 Remediation methodology (from Varlock/best practices):
-1. IMMEDIATE: Rotate any exposed key/secret that may have been committed to git
-2. MIGRATE: Move secrets to a secrets manager (1Password, Vault, cloud KMS)
-3. SCHEMA: Replace .env.example with .env.schema (Varlock pattern)
-4. VALIDATE: Add schema validation to catch missing/invalid env vars at startup
-5. REDACT: Implement log redaction to prevent secrets in console/HTTP output
-6. GITGUARD: Verify .gitignore, add pre-commit hooks for secret detection
-7. AI-PROOF: Ensure AI agents cannot access raw secret values
+1. ENCRYPT: Run `dotenvx encrypt` on all .env files — encrypts values in place so they are safe to commit and opaque to AI agents. This is the fastest fix for plain-text secrets.
+2. IMMEDIATE: Rotate any exposed key/secret that may have been committed to git in plain text.
+3. MIGRATE: For production, move secrets to a secrets manager (1Password, Vault, cloud KMS). For dev/local, dotenvx encryption is sufficient.
+4. SCHEMA: Replace .env.example with .env.schema (Varlock pattern).
+5. VALIDATE: Add schema validation to catch missing/invalid env vars at startup.
+6. REDACT: Implement log redaction to prevent secrets in console/HTTP output.
+7. GITGUARD: Verify .gitignore (especially .env.keys), add pre-commit hooks for secret detection.
+8. AI-PROOF: Ensure AI agents (Aider, Codex, Copilot) only see encrypted values — dotenvx encrypted .env files achieve this by default.
 
 Quality checks:
+- Check if .env files are dotenvx-encrypted (values starting with "encrypted:" are safe)
+- Flag any .env file with plain-text secrets that has NOT been encrypted with dotenvx
+- Verify .env.keys (dotenvx decryption key) is in .gitignore and NOT committed
 - Verify every .env file has a corresponding .gitignore entry
 - Confirm no secrets appear in git log (check full history)
 - Check that env var loading uses validation, not raw process.env
@@ -48,7 +52,8 @@ Return:
 - Severity-classified findings with exact file:line references
 - Git history exposure check results
 - Step-by-step remediation plan ordered by severity
-- Recommended tooling (Varlock, git-secrets, pre-commit hooks)
+- Recommended tooling (dotenvx, Varlock, git-secrets, pre-commit hooks)
+- dotenvx encryption status for each .env file (encrypted / partially / not encrypted)
 - Estimated time to remediate each finding
 
 Do not display, echo, or include actual secret values in your output — use redacted references only.

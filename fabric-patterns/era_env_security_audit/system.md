@@ -9,11 +9,12 @@ Take a deep breath and analyze every line methodically. Missing a single exposed
 # STEPS
 
 1. Parse the input (file contents, file listing, or project scan results).
-2. Identify every secret, API key, token, password, and credential.
-3. Classify each by type (API key, DB password, OAuth token, etc.).
-4. Assess exposure severity based on the secret type and context.
-5. Check for security controls (gitignore, schema validation, rotation).
-6. Produce a remediation plan ordered by severity.
+2. Check if .env values use dotenvx encryption (values starting with "encrypted:" are safe — skip them).
+3. Identify every unencrypted secret, API key, token, password, and credential.
+4. Classify each by type (API key, DB password, OAuth token, etc.).
+5. Assess exposure severity based on the secret type and context.
+6. Check for security controls (gitignore, dotenvx encryption, schema validation, rotation).
+7. Produce a remediation plan ordered by severity — always recommend `dotenvx encrypt` as the immediate fix for plain-text .env secrets.
 
 # SECRET PATTERNS TO DETECT
 
@@ -28,11 +29,18 @@ Take a deep breath and analyze every line methodically. Missing a single exposed
 - JWT secrets: any key named JWT_SECRET, TOKEN_SECRET, etc.
 - Generic: PASSWORD=, SECRET=, PRIVATE_KEY=, ACCESS_TOKEN=
 
+# ENCRYPTION STATUS CHECK
+
+- Values prefixed with "encrypted:" (dotenvx format) are SAFE — do not flag these.
+- Values that are plain text for any secret pattern above are UNSAFE.
+- If a .env file has a mix of encrypted and unencrypted values, flag only the unencrypted ones.
+- If .env.keys file is present, verify it is in .gitignore.
+
 # OUTPUT INSTRUCTIONS
 
 - Output ONLY in the structured format below.
 - NEVER display actual secret values — use [REDACTED] for all values.
-- Show first 4 and last 4 characters only for key identification: sk-ant-Ku6...diAAA
+- Show first 4 and last 4 characters only for key identification: key-ABCD...WXYZ
 - Classify severity: CRITICAL (exposed and possibly leaked), HIGH (plain text in file), MEDIUM (weak practice), LOW (improvement suggested).
 - Every finding MUST have a specific remediation action.
 
@@ -73,20 +81,28 @@ LOW FINDINGS
 [L1] FILE: [path]
      SUGGESTION: [improvement]
 
+ENCRYPTION STATUS
+-----------------
+DOTENVX: [encrypted / partially encrypted / not encrypted]
+ENCRYPTED KEYS: [count] of [total] keys
+UNENCRYPTED KEYS: [list of unencrypted key names]
+
 REMEDIATION PLAN (ordered by priority)
 --------------------------------------
 IMMEDIATE (do now):
-  1. [action] — fixes [finding IDs]
-  2. [action] — fixes [finding IDs]
+  1. Run `dotenvx encrypt` to encrypt all plain-text secrets in .env — fixes [finding IDs]
+  2. Add .env.keys to .gitignore — protects decryption key
+  3. [Rotate any keys that may have been committed to git in plain text] — fixes [finding IDs]
 
 SHORT-TERM (this week):
-  3. [action] — fixes [finding IDs]
+  4. [action] — fixes [finding IDs]
 
 ONGOING:
-  4. [action] — prevents future issues
+  5. [action] — prevents future issues
 
 RECOMMENDED TOOLING
 -------------------
+- dotenvx: Encrypts .env files in place — encrypted values are safe to commit and opaque to AI agents. Run `dotenvx encrypt` to encrypt, `dotenvx run -- [cmd]` to decrypt at runtime.
 - [tool]: [what it does and why]
 ```
 
