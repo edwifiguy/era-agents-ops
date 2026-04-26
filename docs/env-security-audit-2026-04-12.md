@@ -123,6 +123,7 @@
 | **git-secrets** | Pre-commit hook to prevent committing secrets |
 | **trufflehog** | Scan git history for previously committed secrets |
 | **1Password CLI** | Inject secrets at runtime without plain text storage |
+| **Proton Pass CLI + Varlock plugin** | Pull secrets via `pass://` references using Proton Pass CLI |
 | **era_env_security_audit** | Fabric pattern for recurring audits |
 | **env-security-auditor** | ERA agent for comprehensive security review |
 

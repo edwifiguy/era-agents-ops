@@ -1,2 +1,18 @@
 wing: era_agents_ops
-rooms: []
+backend:
+  provider: memgpt
+  runtime: letta
+  mode: persistent
+  endpoint: ${LETTA_BASE_URL:-http://localhost:8283}
+  model: ${MEMGPT_MODEL:-openai/gpt-4o-mini}
+  embedding_model: ${MEMGPT_EMBED_MODEL:-openai/text-embedding-3-small}
+rooms:
+  - id: orchestration-history
+    description: Cross-session routing decisions and task decomposition outcomes.
+    retention: long_term
+  - id: domain-knowledge
+    description: Durable project/domain memory (real estate, biogas, trading, security).
+    retention: long_term
+  - id: run-artifacts
+    description: Execution artifacts and verification summaries for active missions.
+    retention: medium_term
