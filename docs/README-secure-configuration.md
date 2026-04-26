@@ -110,3 +110,36 @@ varlock load --path ~/.config/fabric --format env | grep -E '^(DEFAULT_VENDOR|DE
 - Keep secret values only in Proton Pass.
 - Keep `.env` secret values blank.
 - Validate with `varlock load` before runtime operations.
+
+## 11) Final verified Hermes runtime steps (OpenRouter)
+Use this exact sequence for a clean, repeatable runtime check.
+
+1. Ensure the secret exists in Proton Pass:
+   - Item title: `ERA_OPENROUTER_API_KEY`
+   - Field used by schema: `password`
+
+2. Ensure Hermes schema points to the shared reference:
+```bash
+grep -n 'OPENROUTER_API_KEY=protonPass(pass://Login/ERA_OPENROUTER_API_KEY/password)' ~/.hermes/.env.schema
+```
+
+3. Avoid overriding Varlock with a blank `.env` value:
+   - In `~/.hermes/.env`, do **not** leave an active blank assignment:
+   - Bad: `OPENROUTER_API_KEY=`
+   - Good: `# OPENROUTER_API_KEY=` (commented) or remove the line
+
+4. Authenticate Proton Pass CLI and validate resolution:
+```bash
+pass-cli login 2>&1 || true
+pass-cli info
+varlock load --path ~/.hermes
+```
+
+5. Run a one-shot Hermes runtime verification:
+```bash
+hermes-ai chat -q "Reply with TEST_OK only." --provider openrouter -m openrouter/free -Q
+```
+
+Expected success signal:
+- Output contains `TEST_OK`
+- Command exits with code `0`
