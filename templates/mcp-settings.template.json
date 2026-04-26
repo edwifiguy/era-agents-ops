@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "github": {
+      "enabled": true,
+      "repository": "edwifiguy/era-agents-ops",
+      "private_repository_access": true,
+      "secrets_enabled": true,
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "playwright": {
+      "enabled": true
+    }
+  },
+  "notes": [
+    "Template only: replace placeholders using your local secret manager or MCP runtime secret injection.",
+    "Do not commit real tokens, keys, or passwords."
+  ]
+}

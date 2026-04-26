@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ERA MicroCloud Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; background: #0f172a; color: #e2e8f0; }
+    a { color: #93c5fd; }
+    .card { background: #1e293b; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+    .ok { color: #86efac; }
+    pre { background: #020617; padding: 12px; border-radius: 8px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>ERA MicroCloud Stakeholder Demo</h1>
+  <p>Containerized Canonical-style homelab demo with orchestration + MemPalace awareness + Replit-like workspace access.</p>
+
+  <div class="card">
+    <h2>Entry Points</h2>
+    <ul>
+      <li><a href="http://localhost:18443" target="_blank" rel="noopener">Workspace (code-server)</a> &mdash; password: <code>demo</code></li>
+      <li><a href="http://localhost:18081/api/topology" target="_blank" rel="noopener">Orchestrator topology API</a></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Live Topology</h2>
+    <div id="status">Loading...</div>
+    <pre id="payload"></pre>
+  </div>
+
+  <script>
+    fetch("http://localhost:18081/api/topology")
+      .then(r => r.json())
+      .then(data => {
+        const up = data.nodes.filter(n => n.status === "up").length;
+        document.getElementById("status").innerHTML =
+          `<span class="ok">${up}/${data.nodes.length} nodes reachable</span> | MemPalace rooms: ${data.mempalace.rooms.join(", ")}`;
+        document.getElementById("payload").textContent = JSON.stringify(data, null, 2);
+      })
+      .catch(err => {
+        document.getElementById("status").textContent = "Topology API unavailable";
+        document.getElementById("payload").textContent = String(err);
+      });
+  </script>
+</body>
+</html>
