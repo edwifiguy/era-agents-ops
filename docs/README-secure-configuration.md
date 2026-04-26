@@ -11,6 +11,7 @@ It is scoped to active runtimes only: Fabric and Hermes.
 - `ERA_OPENROUTER_API_KEY`
 - `ERA_ANTHROPIC_API_KEY`
 - `ERA_GEMINI_API_KEY`
+- `ERA_FAL_KEY` (Hermes image generation)
 - Optional fallback (if enabled in schema): `ERA_OPENROUTER_API_KEY_FALLBACK`
 
 ## 3) Proton Pass item convention
@@ -29,6 +30,8 @@ It is scoped to active runtimes only: Fabric and Hermes.
 
 ### Hermes (`~/.hermes/.env.schema`)
 - `OPENROUTER_API_KEY=protonPass(pass://Login/ERA_OPENROUTER_API_KEY/password)`
+- `OPENROUTER_API_KEY_FALLBACK=protonPass(pass://Login/ERA_OPENROUTER_API_KEY_FALLBACK/password)` (optional)
+- `FAL_KEY=protonPass(pass://Login/ERA_FAL_KEY/password, allowMissing=true)` (optional but required for FAL-backed image tools)
 
 ## 5) Login + validation flow
 ### Proton Pass login
@@ -105,6 +108,14 @@ varlock load --path ~/.hermes
 varlock load --path ~/.config/fabric --format env | grep -E '^(DEFAULT_VENDOR|DEFAULT_MODEL)='
 ```
 
+### Varlock fails with `Could not find item with name ERA_FAL_KEY`
+- Create the missing Login item in Proton Pass with exact title `ERA_FAL_KEY`.
+- Put the key value in the `password` field.
+- Re-run:
+```bash
+varlock load --path ~/.hermes
+```
+
 ## 10) Security guardrails
 - Do not store live secrets directly in `.env`.
 - Keep secret values only in Proton Pass.
@@ -143,3 +154,34 @@ hermes-ai chat -q "Reply with TEST_OK only." --provider openrouter -m openrouter
 Expected success signal:
 - Output contains `TEST_OK`
 - Command exits with code `0`
+
+## 12) Final verified Hermes image-key steps (FAL)
+Use this sequence to validate `ERA_FAL_KEY` wiring for image generation.
+
+1. Create a new Proton Pass Login item:
+   - Item title: `ERA_FAL_KEY` (exact)
+   - Field used by schema: `password`
+
+2. Ensure Hermes schema includes:
+```bash
+grep -n 'FAL_KEY=protonPass(pass://Login/ERA_FAL_KEY/password, allowMissing=true)' ~/.hermes/.env.schema
+```
+
+3. Validate env resolution and key visibility:
+```bash
+varlock load --path ~/.hermes
+hermes-ai status
+```
+
+Expected status signal:
+- `FAL` shows as set (`✓`) under API Keys.
+
+4. Run an image-generation verification:
+```bash
+hermes-ai chat -q "Generate a simple 512x512 image of a blue circle on white background and save it to /tmp/hermes_fal_test2.png. Then reply DONE with the exact file path." --provider openrouter -m openrouter/free -Q
+file /tmp/hermes_fal_test2.png
+```
+
+Expected success signal:
+- Output includes `DONE` and `/tmp/hermes_fal_test2.png`
+- `file` reports a valid PNG image
