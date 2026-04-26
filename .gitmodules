@@ -1,0 +1,9 @@
+[submodule "third_party/OpenSpec"]
+	path = third_party/OpenSpec
+	url = https://github.com/Fission-AI/OpenSpec.git
+[submodule "third_party/agency-agents"]
+	path = third_party/agency-agents
+	url = https://github.com/msitarzewski/agency-agents.git
+[submodule "third_party/spec-kit"]
+	path = third_party/spec-kit
+	url = https://github.com/github/spec-kit.git
