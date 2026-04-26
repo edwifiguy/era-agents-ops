@@ -207,3 +207,30 @@ Remediation applied (local Hermes runtime patch):
 
 Post-fix verification result:
 - `TEST_OK` returned successfully with exit code `0`.
+
+## 14) Secure Telegram gateway wiring (Varlock + Proton Pass)
+Use this sequence to wire Telegram messaging fields without plaintext values in `.env`.
+
+1. Create Proton Pass Login items (field used: `password`):
+   - `ERA_CORTANAHERMES_KEY` (bot token)
+   - `ERA_TELEGRAM_ID_KEY` (allowed user ID list)
+   - `ERA_TELEGRAM_HOME_CHANNEL` (default channel/chat ID)
+   - `ERA_TELEGRAM_HOME_CHANNEL_NAME` (channel display label)
+
+2. Add Hermes schema mappings:
+```bash
+grep -n 'TELEGRAM_BOT_TOKEN=protonPass(pass://Login/ERA_CORTANAHERMES_KEY/password, allowMissing=true)' ~/.hermes/.env.schema
+grep -n 'TELEGRAM_ALLOWED_USERS=protonPass(pass://Login/ERA_TELEGRAM_ID_KEY/password, allowMissing=true)' ~/.hermes/.env.schema
+grep -n 'TELEGRAM_HOME_CHANNEL=protonPass(pass://Login/ERA_TELEGRAM_HOME_CHANNEL/password, allowMissing=true)' ~/.hermes/.env.schema
+grep -n 'TELEGRAM_HOME_CHANNEL_NAME=protonPass(pass://Login/ERA_TELEGRAM_HOME_CHANNEL_NAME/password, allowMissing=true)' ~/.hermes/.env.schema
+```
+
+3. Validate secure resolution:
+```bash
+varlock load --path ~/.hermes
+hermes-ai status
+```
+
+Expected success signal:
+- `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ALLOWED_USERS`, `TELEGRAM_HOME_CHANNEL`, and `TELEGRAM_HOME_CHANNEL_NAME` resolve in `varlock load`.
+- Hermes status shows `Telegram` configured.
