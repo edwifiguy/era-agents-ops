@@ -185,3 +185,25 @@ file /tmp/hermes_fal_test2.png
 Expected success signal:
 - Output includes `DONE` and `/tmp/hermes_fal_test2.png`
 - `file` reports a valid PNG image
+
+## 13) QA review: Hermes clean-exit validation after dangerous-command prompt
+Use this check to verify Hermes exits cleanly after approval prompts and still returns expected model output.
+
+Validation command:
+```bash
+hermes-ai chat -q "Reply with TEST_OK only." --provider openrouter -m openrouter/free -Q
+```
+
+Expected success signal:
+- Output contains `TEST_OK`
+- Command exits with code `0`
+- No fatal shutdown error like:
+  - `Fatal Python error: _enter_buffered_busy: could not acquire lock for <_io.BufferedReader name='<stdin>'> ...`
+
+Remediation applied (local Hermes runtime patch):
+- File: `~/.hermes/hermes-agent/tools/approval.py`
+- Change: replaced daemon-threaded `input()` timeout flow with `select.select()` timed stdin polling in `prompt_dangerous_approval`.
+- Rationale: prevents lingering stdin reader thread during interpreter finalization.
+
+Post-fix verification result:
+- `TEST_OK` returned successfully with exit code `0`.
